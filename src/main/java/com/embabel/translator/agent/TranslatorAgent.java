@@ -17,28 +17,27 @@ import java.util.stream.Collectors;
 @Component
 public class TranslatorAgent {
 
-    @Action(description = "Detect ISO language code from input text")
-    public String detectLanguage(OperationContext ctx, String text) {
+    @Action(description = "Detect ISO language code from input")
+    public TranslationRequest detectLanguage(OperationContext ctx, TranslationRequest req) {
         Ai ai = ctx.ai();
         String prompt = """
         You are a language detector. Return ONLY an ISO language code like "fa", "en", "de", "es-ES".
         If uncertain, choose the most probable.
         INPUT:
         %s
-        """.formatted(text);
+        """.formatted(req.getText());
 
         String code = ai.withLlm(LlmOptions.withDefaultLlm().withTemperature(0.1))
                 .generateText(prompt)
                 .trim();
-        return code.split("\\s+")[0].trim();
+        String detectedLang = code.split("\\s+")[0].trim();
+        req.setSourceLang(detectedLang);
+        return req;
     }
 
     @Action(description = "Translate with targetLang/tone/domain and enforce glossary if provided")
     public TranslationResult translate(OperationContext ctx, TranslationRequest req) {
         Ai ai = ctx.ai();
-        String src = (req.getSourceLang() == null || req.getSourceLang().isBlank())
-                ? detectLanguage(ctx, req.getText())
-                : req.getSourceLang();
 
         String glossaryBlock = "n/a";
         Map<String, String> gl = req.getGlossary();
@@ -74,7 +73,7 @@ public class TranslatorAgent {
                 (req.getTone() == null ? "neutral" : req.getTone()),
                 (req.getDomain() == null ? "general" : req.getDomain()),
                 glossaryBlock,
-                src,
+                req.getSourceLang(),
                 req.getTargetLang(),
                 req.getText()
         );
@@ -94,7 +93,7 @@ public class TranslatorAgent {
             """.formatted(req.getText(), translated))
                 .trim();
 
-        return new TranslationResult(src, req.getTargetLang(), translated, notes);
+        return new TranslationResult(req.getSourceLang(), req.getTargetLang(), translated, notes);
     }
 }
 

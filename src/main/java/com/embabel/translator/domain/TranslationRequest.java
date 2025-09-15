@@ -17,6 +17,10 @@ public class TranslationRequest {
         return text;
     }
 
+    public void setSourceLang(String sourceLang) {
+        this.sourceLang = sourceLang;
+    }
+
     public String getSourceLang() {
         return sourceLang;
     }

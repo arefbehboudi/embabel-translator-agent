@@ -21,11 +21,6 @@ public class TranslatorController {
         this.agent = agent;
     }
 
-    @PostMapping(path = "/detect", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String detect(@RequestBody @Valid String text, OperationContext ctx) {
-        return agent.detectLanguage(ctx, text);
-    }
-
     @PostMapping(path = "/translate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public TranslationResult translate(@RequestBody @Valid TranslationRequest request, OperationContext ctx) {
         return agent.translate(ctx, request);
