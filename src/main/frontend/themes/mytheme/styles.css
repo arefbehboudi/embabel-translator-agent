@@ -1,0 +1,70 @@
+:root {
+  --card-radius: 10px;
+}
+
+.v-horizontal-layout.tools {
+    margin-bottom: 12px;
+    gap: 12px;
+}
+
+.tabs-wrap {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  width: 50%;
+}
+
+.lang-tabs {
+  background: white;
+  border: 1px solid var(--lumo-contrast-10pct);
+  border-radius: 8px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--lumo-contrast-10pct);
+  border-radius: var(--card-radius);
+  padding: 8px 10px;
+  min-height: 320px;
+}
+
+.text-area::part(input-field) {
+  border: none;
+  background: transparent;
+}
+
+.counter-row {
+  color: var(--lumo-secondary-text-color);
+  font-size: var(--lumo-font-size-s);
+  padding-right: 6px;
+}
+
+.result-header {
+  color: var(--lumo-secondary-text-color);
+  padding: 8px 4px 0 4px;
+}
+
+.icon-btn {
+  border-radius: 50%;
+}
+
+.services-icons {
+  gap: 10px;
+}
+
+.bottom-shortcuts {
+  margin-top: 28px;
+  gap: 28px;
+}
+
+.circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px dashed var(--lumo-contrast-20pct);
+  display: grid;
+  place-items: center;
+}
+.shortcut span {
+  color: var(--lumo-secondary-text-color);
+}

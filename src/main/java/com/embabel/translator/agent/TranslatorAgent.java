@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class TranslatorAgent {
 
     @Action(description = "Detect ISO language code from input")
-    public TranslationRequest detectLanguage(OperationContext ctx, TranslationRequest req) {
-        Ai ai = ctx.ai();
+    public TranslationRequest detectLanguage(OperationContext ctx) {
+/*        Ai ai = ctx.ai();
         String prompt = """
         You are a language detector. Return ONLY an ISO language code like "fa", "en", "de", "es-ES".
         If uncertain, choose the most probable.
@@ -32,11 +32,12 @@ public class TranslatorAgent {
                 .trim();
         String detectedLang = code.split("\\s+")[0].trim();
         req.setSourceLang(detectedLang);
-        return req;
+        return req;*/
+        return null;
     }
 
     @Action(description = "Translate with targetLang/tone/domain and enforce glossary if provided")
-    public TranslationResult translate(OperationContext ctx, TranslationRequest req) {
+    public TranslationResult translate(TranslationRequest req, OperationContext ctx) {
         Ai ai = ctx.ai();
 
         String glossaryBlock = "n/a";

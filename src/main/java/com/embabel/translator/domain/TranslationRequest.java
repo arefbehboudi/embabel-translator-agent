@@ -13,6 +13,14 @@ public class TranslationRequest {
     public TranslationRequest() {
     }
 
+    public TranslationRequest(String text, String sourceLang, String targetLang, String tone, String domain) {
+        this.text = text;
+        this.sourceLang = sourceLang;
+        this.targetLang = targetLang;
+        this.tone = tone;
+        this.domain = domain;
+    }
+
     public String getText() {
         return text;
     }
