@@ -3,12 +3,7 @@ package com.embabel.translator.service;
 import com.embabel.agent.core.*;
 import com.embabel.translator.domain.TranslationRequest;
 import com.embabel.translator.domain.TranslationResult;
-import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -22,8 +17,7 @@ public class TranslatorService {
         this.agentPlatform = agentPlatform;
     }
 
-    @PostMapping(path = "/translate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TranslationResult translate(@RequestBody @Valid TranslationRequest request) {
+    public TranslationResult translate(TranslationRequest request) {
         Optional<Agent> translatorOptional = agentPlatform.agents()
                 .stream()
                 .filter(agent -> agent.getName().toLowerCase().contains("translator"))

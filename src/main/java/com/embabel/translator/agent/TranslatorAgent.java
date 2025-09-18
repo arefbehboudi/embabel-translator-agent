@@ -1,8 +1,10 @@
 package com.embabel.translator.agent;
 
 
+import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
+import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.Ai;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.common.ai.model.LlmOptions;
@@ -13,29 +15,34 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Agent(description = "Language-to-language translation agent with tone, domain, and glossary support")
+@Agent(description = "Translator with tone/domain/glossary")
 @Component
 public class TranslatorAgent {
 
     @Action(description = "Detect ISO language code from input")
-    public TranslationRequest detectLanguage(OperationContext ctx) {
-/*        Ai ai = ctx.ai();
+    public String detectLanguage(String text, OperationContext ctx) {
+        Ai ai = ctx.ai();
         String prompt = """
         You are a language detector. Return ONLY an ISO language code like "fa", "en", "de", "es-ES".
         If uncertain, choose the most probable.
         INPUT:
         %s
-        """.formatted(req.getText());
+        """.formatted(text);
 
         String code = ai.withLlm(LlmOptions.withDefaultLlm().withTemperature(0.1))
                 .generateText(prompt)
                 .trim();
-        String detectedLang = code.split("\\s+")[0].trim();
-        req.setSourceLang(detectedLang);
-        return req;*/
-        return null;
+        return code.split("\\s+")[0].trim();
     }
 
+    @AchievesGoal(
+            description = "Translate text from SOURCE_LANG to TARGET_LANG with tone/domain; enforce glossary mappings exactly.",
+            export = @Export(
+                    name = "translate",
+                    remote = true,
+                    startingInputTypes = { TranslationRequest.class }
+            )
+    )
     @Action(description = "Translate with targetLang/tone/domain and enforce glossary if provided")
     public TranslationResult translate(TranslationRequest req, OperationContext ctx) {
         Ai ai = ctx.ai();
@@ -47,6 +54,10 @@ public class TranslatorAgent {
                     .map(e -> "- " + e.getKey() + " => " + e.getValue())
                     .collect(Collectors.joining("\n"));
         }
+
+        String src = (req.getSourceLang() == null || req.getSourceLang().isBlank())
+                ? detectLanguage(req.getText(), ctx)
+                : req.getSourceLang();
 
         String translationPrompt = """
         You are a professional translator.
@@ -74,7 +85,7 @@ public class TranslatorAgent {
                 (req.getTone() == null ? "neutral" : req.getTone()),
                 (req.getDomain() == null ? "general" : req.getDomain()),
                 glossaryBlock,
-                req.getSourceLang(),
+                src,
                 req.getTargetLang(),
                 req.getText()
         );
@@ -94,7 +105,7 @@ public class TranslatorAgent {
             """.formatted(req.getText(), translated))
                 .trim();
 
-        return new TranslationResult(req.getSourceLang(), req.getTargetLang(), translated, notes);
+        return new TranslationResult(src, req.getTargetLang(), translated, notes);
     }
 }
 

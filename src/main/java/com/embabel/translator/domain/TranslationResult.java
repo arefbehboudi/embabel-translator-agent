@@ -12,4 +12,12 @@ public class TranslationResult {
         this.translation = translation;
         this.notes = notes;
     }
+
+    public String getTranslation() {
+        return translation;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
 }

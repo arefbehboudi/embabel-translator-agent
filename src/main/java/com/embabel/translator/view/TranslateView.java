@@ -153,7 +153,7 @@ public class TranslateView extends VerticalLayout {
         Tone tone = Tone.valueOfDisplayName(this.tone.getValue());
         TranslationResult out = translatorService.translate(new TranslationRequest(sourceArea.getValue(),
                 src.equals("Detect language") ? null : src, tgt, tone.getDisplayName(), domain.getDisplayName()));
-        // resultArea.setValue(out);
+        resultArea.setValue(out.getTranslation());
     }
 }
 
